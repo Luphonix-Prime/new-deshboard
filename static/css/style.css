@@ -1204,7 +1204,7 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2.5rem;
-```text
+
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--border-color);
     gap: 2rem;
@@ -1882,7 +1882,7 @@ body {
 }
 
 .nav-logo-img {
-    height: 40px;
+    height: 80px;
     width: auto;
     margin-right: 12px;
     filter: brightness(1.1);
@@ -2065,6 +2065,7 @@ form {
 /* Navbar animations */
 .navbar {
     animation: slideDown 0.6s ease-out;
+    opacity: inherit;
 }
 
 @keyframes slideDown {
