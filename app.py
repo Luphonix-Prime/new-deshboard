@@ -121,7 +121,7 @@ def download_report():
     current_time = datetime.datetime.now()
     utc_time = datetime.datetime.utcnow()
 
-    # Additional metadata for Aphilion Cyber compliance
+    # Additional metadata for aphelioncyber compliance
     system_info = {
         'platform': platform.system(),
         'hostname': socket.gethostname(),
@@ -151,15 +151,15 @@ def download_report():
         'report_metadata': {
             'download_timestamp': current_time.strftime("%Y-%m-%d %H:%M:%S"),
             'utc_timestamp': utc_time.strftime("%Y-%m-%d %H:%M:%S UTC"),
-            'report_title': 'Aphilion Cyber Cybersecurity Risk Assessment Report',
-            'assessment_scope': 'Multi-Framework Security Control Assessment by Aphilion Cyber',
+            'report_title': 'aphelioncyber Cybersecurity Risk Assessment Report',
+            'assessment_scope': 'Multi-Framework Security Control Assessment by aphelioncyber',
             'report_id': f"APHILION-RPT-{current_time.strftime('%Y%m%d-%H%M%S')}",
             'timezone': current_time.strftime("%Z") or "Local Time",
             'report_version': '2.1',
-            'assessment_methodology': 'Aphilion Cyber Standard Risk Assessment Framework',
+            'assessment_methodology': 'aphelioncyber Standard Risk Assessment Framework',
             'compliance_level': 'Enterprise Grade',
             'system_info': system_info,
-            'report_classification': 'Confidential - Aphilion Cyber',
+            'report_classification': 'Confidential - aphelioncyber',
             'assessment_date_iso': current_time.strftime("%Y-%m-%dT%H:%M:%S"),
             'next_assessment_due': (current_time + datetime.timedelta(days=90)).strftime("%B %d, %Y")
         },
@@ -205,7 +205,7 @@ def reset():
     return redirect(url_for('frameworks'))
 
 def calculate_analytics(selected_frameworks, selected_controls, frameworks_data, all_controls):
-    """Calculate precise security analytics and scores for Aphilion Cyber compliance assessment."""
+    """Calculate precise security analytics and scores for aphelioncyber compliance assessment."""
     from data.controls import get_controls_by_framework
 
     # Get framework-specific controls with exact mapping
