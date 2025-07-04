@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Frameworks - CyberSecure Assessment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <canvas id="network-bg"></canvas>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="{{ url_for('static', filename='images/white_logo-removebg-preview.png') }}" alt="Aphelion Cyber" class="nav-logo-img">
+                <span>AphilionCyber</span>
+            </div>
+            <div class="nav-steps">
+                <div class="step active">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Frameworks</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Controls</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Dashboard</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Select Security Frameworks</h1>
+                <p>Choose the cybersecurity frameworks you want to assess for compliance and implementation.</p>
+            </div>
+
+            <form action="{{ url_for('select_frameworks') }}" method="POST" id="frameworks-form">
+                <div class="frameworks-grid">
+                    {% for framework_id, framework in frameworks.items() %}
+                    <div class="framework-card">
+                        <div class="framework-checkbox">
+                            <input type="checkbox" 
+                                   id="framework-{{ framework_id }}" 
+                                   name="frameworks" 
+                                   value="{{ framework_id }}"
+                                   {% if framework_id in selected_frameworks %}checked{% endif %}>
+                            <label for="framework-{{ framework_id }}" class="checkbox-label">
+                                <i class="fas fa-check"></i>
+                            </label>
+                        </div>
+
+                        <div class="framework-content">
+                            <div class="framework-header">
+                                <h3>{{ framework.name }}</h3>
+                                <div class="framework-category">
+                                    {% if 'NIST' in framework.name %}
+                                    US Federal Standard
+                                    {% elif 'ISO' in framework.name %}
+                                    International Standard
+                                    {% elif 'PCI' in framework.name %}
+                                    Payment Security
+                                    {% elif 'HIPAA' in framework.name %}
+                                    Healthcare Compliance
+                                    {% elif 'COBIT' in framework.name %}
+                                    IT Governance
+                                    {% elif 'RBI' in framework.name %}
+                                    Banking Regulation
+                                    {% elif 'CERT' in framework.name %}
+                                    National Guidelines
+                                    {% else %}
+                                    Security Framework
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="framework-description">
+                                <p>{{ framework.description }}</p>
+                            </div>
+                            <div class="framework-priority-badge">
+                                {% if 'NIST' in framework.name or 'ISO' in framework.name %}
+                                <span class="priority-badge critical">CRITICAL</span>
+                                {% elif 'PCI' in framework.name or 'HIPAA' in framework.name %}
+                                <span class="priority-badge high">HIGH</span>
+                                {% else %}
+                                <span class="priority-badge medium">MEDIUM</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-actions">
+                    <div class="selection-summary">
+                        <span id="selection-count">0</span> frameworks selected
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="continue-btn" disabled>
+                        Continue to Controls
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Handle framework selection
+        const checkboxes = document.querySelectorAll('input[name="frameworks"]');
+        const continueBtn = document.getElementById('continue-btn');
+        const selectionCount = document.getElementById('selection-count');
+
+        function updateSelection() {
+            const selectedCount = document.querySelectorAll('input[name="frameworks"]:checked').length;
+            selectionCount.textContent = selectedCount;
+            continueBtn.disabled = selectedCount === 0;
+        }
+
+        // Add click handlers to framework cards
+        document.querySelectorAll('.framework-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't trigger if clicking on checkbox or label
+                if (e.target.type !== 'checkbox' && !e.target.closest('.framework-checkbox')) {
+                    const checkbox = card.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    card.classList.toggle('selected', checkbox.checked);
+                    updateSelection();
+                }
+            });
+        });
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const card = this.closest('.framework-card');
+                card.classList.toggle('selected', this.checked);
+                updateSelection();
+            });
+        });
+
+        // Initialize selected states on page load
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkbox.closest('.framework-card').classList.add('selected');
+            }
+        });
+
+        // Initialize
+        updateSelection();
+
+    </script>
+    <script src="{{ url_for('static', filename='js/network.js') }}"></script>
+</body>
+</html>

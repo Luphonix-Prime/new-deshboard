@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Cyber Risk Dashboard - CyberSecure Assessment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="network-bg"></canvas>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="{{ url_for('static', filename='images/white_logo-removebg-preview.png') }}" alt="Aphelion Cyber" class="nav-logo-img">
+                <span>AphilionCyber</span>
+            </div>
+            <div class="nav-steps">
+                <div class="step completed">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Frameworks</span>
+                </div>
+                <div class="step completed">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Controls</span>
+                </div>
+                <div class="step active">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Dashboard</span>
+                </div>
+            </div>
+            <!-- <div class="nav-actions">
+                <button onclick="downloadReport()" class="btn btn-success">
+                    <i class="fas fa-download"></i> Download Report
+                </button>
+                <button onclick="refreshDashboard()" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Start Over
+                </button>
+            </div> -->
+        </div>
+    </nav>
+
+    <main class="dashboard-content">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="header-content">
+                    <h1>Enterprise Cyber Risk Dashboard</h1>
+                    <p>Real-time security posture and risk visualization</p>
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn" onclick="refreshDashboard()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="action-btn" onclick="downloadReport()">
+                        <i class="fas fa-download"></i> Download Report
+                    </button>
+                    <span class="last-updated" id="last-updated">Last updated: <span id="current-time"></span></span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Security Score Card -->
+                <div class="dashboard-card security-score-card">
+                    <div class="card-header">
+                        <h3>Security Score</h3>
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="score-circle">
+                        <canvas id="security-score-chart" width="200" height="200"></canvas>
+                        <div class="score-center">
+                            <div class="score-number">{{ analytics.security_score }}</div>
+                            <div class="score-label">OVERALL SCORE</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Control Coverage Card -->
+                <div class="dashboard-card control-coverage-card">
+                    <div class="card-header">
+                        <h3>Control Coverage</h3>
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="coverage-chart">
+                        <canvas id="coverage-chart" width="300" height="200"></canvas>
+                        <div class="coverage-stats">
+                            <div class="coverage-item">
+                                <span class="coverage-label">ENABLED</span>
+                                <span class="coverage-value enabled">{{ analytics.controls_implemented }}</span>
+                            </div>
+                            <div class="coverage-item">
+                                <span class="coverage-label">TOTAL</span>
+                                <span class="coverage-value total">{{ analytics.total_controls }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Distribution Card -->
+                <div class="dashboard-card risk-distribution-card">
+                    <div class="card-header">
+                        <h3>Risk Distribution</h3>
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="risk-chart">
+                        <canvas id="risk-chart" width="200" height="200"></canvas>
+                        <div class="risk-legend">
+                            <!-- Legend items will be dynamically generated based on actual risk data -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top 5 Risks Card -->
+                <div class="dashboard-card top-risks-card">
+                    <div class="card-header">
+                        <h3>Top 5 Risks</h3>
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="risks-list">
+                        {% if analytics.missing_critical %}
+                            {% for control in analytics.missing_critical[:3] %}
+                            <div class="risk-item critical">
+                                <div class="risk-indicator">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="risk-content">
+                                    <div class="risk-title">{{ control }}</div>
+                                    <div class="risk-category">CRITICAL</div>
+                                </div>
+                                <div class="risk-score">9</div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if analytics.missing_controls and analytics.missing_controls|length > (analytics.missing_critical|length if analytics.missing_critical else 0) %}
+                            {% set remaining_slots = 5 - (analytics.missing_critical|length if analytics.missing_critical else 0) %}
+                            {% set other_missing = analytics.missing_controls[analytics.missing_critical|length if analytics.missing_critical else 0:] %}
+                            {% for control in other_missing[:remaining_slots] %}
+                            <div class="risk-item high">
+                                <div class="risk-indicator">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="risk-content">
+                                    <div class="risk-title">{{ control }}</div>
+                                    <div class="risk-category">
+                                        {% if 'Network' in control or 'Firewall' in control %}
+                                        TECHNICAL
+                                        {% elif 'Training' in control or 'Awareness' in control %}
+                                        HUMAN
+                                        {% else %}
+                                        GOVERNANCE
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="risk-score">
+                                    {% if 'Patch' in control or 'Vulnerability' in control %}
+                                    7
+                                    {% elif 'Monitoring' in control or 'SIEM' in control %}
+                                    6
+                                    {% else %}
+                                    5
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if not analytics.missing_controls %}
+                        <div class="no-risks">
+                            <i class="fas fa-check-circle"></i>
+                            <p>No critical risks identified. Excellent security posture!</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Key Metrics Card -->
+                <div class="dashboard-card key-metrics-card">
+                    <div class="card-header">
+                        <h3>Key Metrics</h3>
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-item critical">
+                            <div class="metric-number">{{ analytics.risk_levels.critical }}</div>
+                            <div class="metric-label">Critical Risks</div>
+                        </div>
+                        <div class="metric-item high">
+                            <div class="metric-number">{{ analytics.risk_levels.high }}</div>
+                            <div class="metric-label">High Risks</div>
+                        </div>
+                        <div class="metric-item coverage">
+                            <div class="metric-number">{{ "%.1f"|format(analytics.coverage_percentage) }}%</div>
+                            <div class="metric-label">Control Coverage</div>
+                        </div>
+                        <div class="metric-item compliant">
+                            <div class="metric-number">{{ analytics.frameworks_selected }}/8</div>
+                            <div class="metric-label">Frameworks</div>
+                        </div>
+                        <div class="metric-item implemented">
+                            <div class="metric-number">{{ analytics.controls_implemented }}/{{ analytics.total_controls }}</div>
+                            <div class="metric-label">Controls</div>
+                        </div>
+                        <div class="metric-item critical-controls">
+                            <div class="metric-number">{{ "%.1f"|format(analytics.critical_controls_status.percentage) }}%</div>
+                            <div class="metric-label">Critical Controls</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Recommendations Card -->
+                <div class="dashboard-card recommendations-card full-width">
+                    <div class="card-header">
+                        <h3>Security Recommendations</h3>
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="recommendations-list">
+                        {% for recommendation in analytics.recommendations %}
+                        <div class="recommendation-item {{ recommendation.priority }}">
+                            <div class="recommendation-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="recommendation-content">
+                                <div class="recommendation-title">{{ recommendation.title }}</div>
+                                <div class="recommendation-description">{{ recommendation.description }}</div>
+                            </div>
+                            <div class="recommendation-priority {{ recommendation.priority }}">
+                                {{ recommendation.priority.upper() }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Security Score Doughnut Chart
+        const scoreCtx = document.getElementById('security-score-chart').getContext('2d');
+        const securityScore = {{ analytics.security_score }};
+
+        new Chart(scoreCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [securityScore, 100 - securityScore],
+                    backgroundColor: ['#4CAF50', '#2c2c3e'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '75%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Control Coverage Chart - Bar chart showing implemented vs missing
+        const coverageCtx = document.getElementById('coverage-chart').getContext('2d');
+        const implementedControls = {{ analytics.controls_implemented }};
+        const totalControls = {{ analytics.total_controls }};
+        const missingControls = totalControls - implementedControls;
+
+        new Chart(coverageCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Implemented', 'Missing'],
+                datasets: [{
+                    label: 'Controls',
+                    data: [implementedControls, missingControls],
+                    backgroundColor: ['#4CAF50', '#f44336'],
+                    borderColor: ['#388E3C', '#d32f2f'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { 
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { 
+                        grid: { display: false },
+                        ticks: { color: '#fff' }
+                    },
+                    y: { 
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { color: '#fff' }
+                    }
+                }
+            }
+        });
+
+        // Risk Distribution Pie Chart - Show missing controls by framework
+        const riskCtx = document.getElementById('risk-chart').getContext('2d');
+        const frameworkMissingData = {{ analytics.framework_missing_controls|tojson }};
+        const totalMissingControls = {{ analytics.missing_controls|length }};
+
+        // Calculate framework-specific missing control distribution
+        const chartLabels = [];
+        const chartData = [];
+        const chartColors = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
+
+        let colorIndex = 0;
+        for (const [framework, missingCount] of Object.entries(frameworkMissingData)) {
+            if (missingCount > 0) {
+                const percentage = Math.round((missingCount / totalMissingControls) * 100);
+                chartLabels.push(framework);
+                chartData.push(percentage);
+                colorIndex++;
+            }
+        }
+
+        // Show "All Controls Implemented" if no missing controls
+        if (totalMissingControls === 0) {
+            chartLabels.push('All Controls Implemented');
+            chartData.push(100);
+        }
+
+        new Chart(riskCtx, {
+            type: 'pie',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: chartColors.slice(0, chartLabels.length),
+                    borderColor: '#1e1b4b',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const framework = context.label;
+                                const missingCount = frameworkMissingData[framework] || 0;
+                                return `${framework}: ${missingCount} missing controls (${context.parsed}%)`;
+                            }
+                        }
+                    }
+                },
+                maintainAspectRatio: true
+            }
+        });
+
+        // Update legend to show framework-specific missing controls
+        const riskLegend = document.querySelector('.risk-legend');
+        riskLegend.innerHTML = '';
+
+        if (totalMissingControls > 0) {
+            let colorIdx = 0;
+            for (const [framework, missingCount] of Object.entries(frameworkMissingData)) {
+                if (missingCount > 0) {
+                    const percentage = Math.round((missingCount / totalMissingControls) * 100);
+                    riskLegend.innerHTML += `
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: ${chartColors[colorIdx]};"></span>
+                            <span class="legend-label">${framework}: ${percentage}% (${missingCount} controls)</span>
+                        </div>`;
+                    colorIdx++;
+                }
+            }
+        } else {
+            riskLegend.innerHTML = `
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #10b981;"></span>
+                    <span class="legend-label">All Controls Implemented: 100%</span>
+                </div>`;
+        }
+
+        // Download Report Function
+        function downloadReport() {
+            // Show loading state for all download buttons
+            const downloadBtns = document.querySelectorAll('button[onclick="downloadReport()"]');
+            const originalTexts = [];
+
+            downloadBtns.forEach((btn, index) => {
+                originalTexts[index] = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                btn.disabled = true;
+            });
+
+            fetch('{{ url_for("download_report") }}')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Create and download the report as HTML
+                        const reportBlob = new Blob([data.html_content], {
+                            type: 'text/html'
+                        });
+                        const url = window.URL.createObjectURL(reportBlob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = data.filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+
+                        // Show success message with real-time info
+                        const message = `✅ HTML report downloaded successfully!\n\nDownload Time: ${data.download_time}\nFilename: ${data.filename}\n\nClick OK to open in new tab for PDF printing, or Cancel to continue.`;
+                        const userChoice = confirm(message);
+                        if (userChoice) {
+                            // Open report in new window for PDF printing
+                            const printWindow = window.open();
+                            printWindow.document.write(data.html_content);
+                            printWindow.document.close();
+
+                            // Add print button and auto-print option
+                            setTimeout(() => {
+                                if (confirm('Would you like to print/save as PDF now?')) {
+                                    printWindow.print();
+                                }
+                            }, 1000);
+                        }
+
+                        // Update dashboard timestamp
+                        updateCurrentTime();
+                    } else {
+                        alert('Failed to generate report. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error generating report. Please try again.');
+                })
+                .finally(() => {
+                    // Restore button states
+                    downloadBtns.forEach((btn, index) => {
+                        btn.innerHTML = originalTexts[index];
+                        btn.disabled = false;
+                    });
+                });
+        }
+
+        // Refresh Dashboard Function - redirects to first page
+        function refreshDashboard() {
+            // Clear session and redirect to frameworks page
+            window.location.href = '{{ url_for("reset") }}';
+        }
+
+        // Real-time clock update
+        function updateCurrentTime() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            };
+            const timeString = now.toLocaleDateString('en-US', options);
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        // Update time immediately and then every second
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+
+        // Auto-refresh dashboard data every 30 seconds
+        function autoRefreshData() {
+            // Only refresh if user hasn't interacted recently
+            const lastInteraction = window.lastUserInteraction || Date.now();
+            if (Date.now() - lastInteraction > 30000) { // 30 seconds of inactivity
+                location.reload();
+            }
+        }
+
+        // Track user interactions
+        let lastUserInteraction = Date.now();
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+            document.addEventListener(event, () => {
+                window.lastUserInteraction = Date.now();
+            });
+        });
+
+        // Auto-refresh every 5 minutes (300000ms)
+        setInterval(autoRefreshData, 300000);
+    </script>
+
+        <script src="{{ url_for('static', filename='js/network.js') }}"></script>
+
+</body>
+</html>

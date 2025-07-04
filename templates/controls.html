@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Controls Checklist - CyberSecure Assessment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <canvas id="network-bg"></canvas>
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Security Control Assessment</h1>
+                <p>Evaluate your organization's implementation of critical security controls. Select all controls that are currently deployed and operational in your environment.</p>
+
+                <div class="selected-frameworks">
+                    <span class="label">Selected Frameworks:</span>
+                    {% for framework_id in selected_frameworks %}
+                        <span class="framework-tag">{{ frameworks_data[framework_id].name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="controls-section">
+                <div class="controls-header">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="search-input" placeholder="Search security controls...">
+                    </div>
+                    <div class="controls-actions">
+                        <button type="button" id="select-all" class="btn btn-secondary">
+                            <i class="fas fa-check-square"></i> Select All
+                        </button>
+                        <button type="button" id="clear-all" class="btn btn-secondary">
+                            <i class="fas fa-square"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <form action="{{ url_for('select_controls') }}" method="POST" id="controls-form">
+                    <div class="controls-grid">
+                        {% for control in all_controls %}
+                        <div class="control-item" data-control="{{ control|lower }}">
+                            <div class="control-checkbox">
+                                <input type="checkbox" 
+                                       id="control-{{ loop.index }}" 
+                                       name="controls" 
+                                       value="{{ control }}"
+                                       {% if control in selected_controls %}checked{% endif %}>
+                                <label for="control-{{ loop.index }}" class="checkbox-label">
+                                    <i class="fas fa-check"></i>
+                                </label>
+                            </div>
+                            <div class="control-content">
+                                <div class="control-header">
+                                    <div class="control-name">{{ control }}</div>
+                                    {% if 'MFA' in control or 'Multi-Factor' in control or 'Encryption' in control or 'Access Control' in control or 'Incident Response' in control %}
+                                    <div class="control-priority critical">CRITICAL</div>
+                                    {% elif 'Patch' in control or 'Vulnerability' in control or 'Firewall' in control or 'Monitoring' in control %}
+                                    <div class="control-priority high">HIGH</div>
+                                    {% else %}
+                                    <div class="control-priority medium">MEDIUM</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="control-category">
+                                    {% if 'Network' in control or 'Firewall' in control or 'IDS' in control %}
+                                    Network Security
+                                    {% elif 'Authentication' in control or 'MFA' in control or 'Access' in control %}
+                                    Access Control
+                                    {% elif 'Backup' in control or 'Recovery' in control or 'Encryption' in control %}
+                                    Data Protection
+                                    {% elif 'Incident' in control or 'Response' in control %}
+                                    Incident Management
+                                    {% elif 'Monitoring' in control or 'SIEM' in control or 'Logging' in control %}
+                                    Monitoring & Detection
+                                    {% elif 'Patch' in control or 'Vulnerability' in control %}
+                                    Vulnerability Management
+                                    {% elif 'Training' in control or 'Awareness' in control %}
+                                    Human Factors
+                                    {% elif 'Governance' in control or 'Compliance' in control or 'Risk' in control %}
+                                    Governance
+                                    {% else %}
+                                    Technical
+                                    {% endif %}
+                                </div>
+
+                                <div class="control-frameworks">
+                                    {% if control in control_frameworks %}
+                                        {% for framework in control_frameworks[control] %}
+                                            <span class="framework-badge">{{ framework }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ url_for('frameworks') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Frameworks
+                        </a>
+                        <div class="selection-summary">
+                            <span id="selection-count">{{ selected_controls|length }}</span> of {{ all_controls|length }} controls selected
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="continue-btn">
+                            Generate Dashboard
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="{{ url_for('static', filename='images/white_logo-removebg-preview.png') }}" alt="Aphelion Cyber" class="nav-logo-img">
+                <span>AphilionCyber</span>
+            </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const controlItems = document.querySelectorAll('.control-item');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            controlItems.forEach(item => {
+                const controlName = item.querySelector('.control-name').textContent.toLowerCase();
+                if (controlName.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Selection functionality
+        const checkboxes = document.querySelectorAll('input[name="controls"]');
+        const selectionCount = document.getElementById('selection-count');
+        const selectAllBtn = document.getElementById('select-all');
+        const clearAllBtn = document.getElementById('clear-all');
+
+        function updateSelectionCount() {
+            const selectedCount = document.querySelectorAll('input[name="controls"]:checked').length;
+            selectionCount.textContent = selectedCount;
+        }
+
+        // Select/Clear all functionality
+        selectAllBtn.addEventListener('click', function() {
+            const visibleCheckboxes = Array.from(checkboxes).filter(cb => 
+                cb.closest('.control-item').style.display !== 'none'
+            );
+            visibleCheckboxes.forEach(checkbox => checkbox.checked = true);
+            updateSelectionCount();
+        });
+
+        clearAllBtn.addEventListener('click', function() {
+            const visibleCheckboxes = Array.from(checkboxes).filter(cb => 
+                cb.closest('.control-item').style.display !== 'none'
+            );
+            visibleCheckboxes.forEach(checkbox => checkbox.checked = false);
+            updateSelectionCount();
+        });
+
+        // Add click handlers to control items
+        document.querySelectorAll('.control-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Don't trigger if clicking on checkbox or label
+                if (e.target.type !== 'checkbox' && !e.target.closest('.control-checkbox')) {
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    item.classList.toggle('selected', checkbox.checked);
+                    updateSelectionCount();
+                }
+            });
+        });
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const item = this.closest('.control-item');
+                item.classList.toggle('selected', this.checked);
+                updateSelectionCount();
+            });
+        });
+
+        // Initialize selected states on page load
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkbox.closest('.control-item').classList.add('selected');
+            }
+        });
+
+        // Initialize
+        updateSelectionCount();
+
+    </script>
+
+    <script src="{{ url_for('static', filename='js/network.js') }}"></script>
+</body>
+</html>

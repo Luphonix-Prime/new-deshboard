@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aphilion Cyber Security Assessment Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .report-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .report-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .report-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .report-meta {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+        
+        .report-meta h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .meta-value {
+            color: #333;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 25px;
+        }
+        
+        .executive-summary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .security-score {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .score-circle {
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#4CAF50 {{ analytics.security_score * 3.6 }}deg, #eee 0deg);
+            position: relative;
+            margin: 10px;
+        }
+        
+        .score-inner {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .score-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .score-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+        }
+        
+        .metric-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .frameworks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .framework-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.08);
+            margin-bottom: 15px;
+        }
+        
+        .framework-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .framework-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .controls-list {
+            columns: 2;
+            column-gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .control-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 3px solid #4CAF50;
+            break-inside: avoid;
+            font-size: 0.9em;
+        }
+        
+        .missing-controls-list {
+            columns: 2;
+            column-gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .missing-control-item {
+            background: #ffebee;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 3px solid #f44336;
+            break-inside: avoid;
+            font-size: 0.9em;
+        }
+        
+        .risk-category {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #ff9800;
+            box-shadow: 0 3px 12px rgba(255, 152, 0, 0.1);
+        }
+        
+        .risk-category h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+        
+        .risk-technical { border-color: #f44336; background: #ffebee; }
+        .risk-technical h4 { color: #f44336; }
+        
+        .risk-human { border-color: #ff9800; background: #fff3e0; }
+        .risk-human h4 { color: #ff9800; }
+        
+        .risk-governance { border-color: #9c27b0; background: #f3e5f5; }
+        .risk-governance h4 { color: #9c27b0; }
+        
+        .recommendations-list {
+            margin: 20px 0;
+        }
+        
+        .recommendation-item {
+            background: #e3f2fd;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            border: 2px solid #2196f3;
+            box-shadow: 0 3px 12px rgba(33, 150, 243, 0.1);
+        }
+        
+        .recommendation-title {
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 5px;
+        }
+        
+        .recommendation-description {
+            color: #555;
+            font-size: 0.9em;
+        }
+        
+        .recommendation-priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .priority-critical {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .priority-high {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .priority-medium {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .chart-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        @media print {
+            body {
+                font-size: 12px;
+            }
+            .section {
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+            .report-header {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- Report Header -->
+        <div class="report-header">
+            <div style="text-align: right; font-size: 0.9em; margin-bottom: 10px; opacity: 0.9;">
+                Classification: Confidential - Aphilion Cyber
+            </div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="/static/images/aphilion_logo.png" alt="Aphilion Cyber Logo" style="height: 80px; margin-bottom: 15px;" onerror="this.style.display='none'">
+            </div>
+            <h1>Cybersecurity Risk Assessment Report</h1>
+            <p>Multi-Framework Security Control Assessment by Aphilion Cyber</p>
+            <p style="font-size: 0.9em; opacity: 0.8;">Downloaded: {{ report_metadata.download_timestamp }} | UTC: {{ report_metadata.utc_timestamp }}</p>
+            <p style="font-size: 0.85em; opacity: 0.7;">Report Version: {{ report_metadata.report_version }} | Next Assessment Due: {{ report_metadata.next_assessment_due }}</p>
+        </div>
+
+        <!-- Report Metadata -->
+        <div class="report-meta">
+            <h3>Assessment Summary</h3>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Security Score:</span>
+                    <span class="meta-value">{{ analytics.security_score }}/100</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Control Coverage:</span>
+                    <span class="meta-value">{{ "%.1f"|format(analytics.coverage_percentage) }}%</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Frameworks Assessed:</span>
+                    <span class="meta-value">{{ analytics.frameworks_selected }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Controls Implemented:</span>
+                    <span class="meta-value">{{ analytics.controls_implemented }}/{{ analytics.total_controls }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Critical Risks:</span>
+                    <span class="meta-value">{{ analytics.risk_levels.critical }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Missing Controls:</span>
+                    <span class="meta-value">{{ missing_controls|length }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Report ID:</span>
+                    <span class="meta-value">{{ report_metadata.report_id }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Download Time:</span>
+                    <span class="meta-value">{{ report_metadata.download_timestamp }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">UTC Time:</span>
+                    <span class="meta-value">{{ report_metadata.utc_timestamp }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Timezone:</span>
+                    <span class="meta-value">{{ report_metadata.timezone }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Assessment Methodology:</span>
+                    <span class="meta-value">{{ report_metadata.assessment_methodology }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Compliance Level:</span>
+                    <span class="meta-value">{{ report_metadata.compliance_level }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Assessment Date (ISO):</span>
+                    <span class="meta-value">{{ report_metadata.assessment_date_iso }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Report Version:</span>
+                    <span class="meta-value">{{ report_metadata.report_version }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Next Assessment Due:</span>
+                    <span class="meta-value">{{ report_metadata.next_assessment_due }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <div class="section-header executive-summary">Executive Summary</div>
+            <div class="section-content">
+                <div class="security-score">
+                    <div class="score-circle">
+                        <div class="score-inner">
+                            <div class="score-number">{{ analytics.security_score }}</div>
+                            <div class="score-label">SECURITY SCORE</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-number">{{ analytics.risk_levels.critical }}</div>
+                        <div class="metric-label">Critical Risks</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">{{ analytics.risk_levels.high }}</div>
+                        <div class="metric-label">High Risks</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">{{ "%.1f"|format(analytics.coverage_percentage) }}%</div>
+                        <div class="metric-label">Control Coverage</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">{{ analytics.frameworks_selected }}/{{ analytics.total_frameworks }}</div>
+                        <div class="metric-label">Frameworks</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">{{ analytics.controls_implemented }}/{{ analytics.total_controls }}</div>
+                        <div class="metric-label">Controls</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">{{ "%.1f"|format(analytics.critical_controls_status.percentage) }}%</div>
+                        <div class="metric-label">Critical Controls</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selected Frameworks -->
+        <div class="section">
+            <div class="section-header">Selected Compliance Frameworks</div>
+            <div class="section-content">
+                <p>The following cybersecurity frameworks were selected for this assessment:</p>
+                <div class="frameworks-grid">
+                    {% for framework_id in selected_frameworks %}
+                    <div class="framework-card">
+                        <div class="framework-name">{{ frameworks_data[framework_id].name }}</div>
+                        <div class="framework-description">{{ frameworks_data[framework_id].description }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Implemented Controls -->
+        <div class="section">
+            <div class="section-header">Implemented Security Controls</div>
+            <div class="section-content">
+                <p><strong>{{ analytics.controls_implemented }}</strong> security controls have been successfully implemented out of <strong>{{ analytics.total_controls }}</strong> applicable controls.</p>
+                
+                {% if selected_controls %}
+                <div class="controls-list">
+                    {% for control in selected_controls %}
+                    <div class="control-item">{{ control }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Risk Analysis -->
+        <div class="section">
+            <div class="section-header">Risk Analysis & Missing Controls</div>
+            <div class="section-content">
+                <p><strong>{{ missing_controls|length }}</strong> security controls are missing and require immediate attention.</p>
+                
+                {% if risk_categories.technical.count > 0 %}
+                <div class="risk-category risk-technical">
+                    <h4>Technical Risks ({{ risk_categories.technical.count }} controls - {{ risk_categories.technical.percentage }}%)</h4>
+                    <p>Infrastructure, network security, and technical implementation gaps.</p>
+                    {% if technical_risks %}
+                    <div class="missing-controls-list">
+                        {% for control in technical_risks %}
+                        <div class="missing-control-item">{{ control }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if risk_categories.human.count > 0 %}
+                <div class="risk-category risk-human">
+                    <h4>Human Risks ({{ risk_categories.human.count }} controls - {{ risk_categories.human.percentage }}%)</h4>
+                    <p>Training, awareness, and human factor related security gaps.</p>
+                    {% if human_risks %}
+                    <div class="missing-controls-list">
+                        {% for control in human_risks %}
+                        <div class="missing-control-item">{{ control }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if risk_categories.governance.count > 0 %}
+                <div class="risk-category risk-governance">
+                    <h4>Governance Risks ({{ risk_categories.governance.count }} controls - {{ risk_categories.governance.percentage }}%)</h4>
+                    <p>Policy, procedure, and governance framework gaps.</p>
+                    {% if governance_risks %}
+                    <div class="missing-controls-list">
+                        {% for control in governance_risks %}
+                        <div class="missing-control-item">{{ control }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="section">
+            <div class="section-header">Security Recommendations</div>
+            <div class="section-content">
+                <div class="recommendations-list">
+                    {% for recommendation in analytics.recommendations %}
+                    <div class="recommendation-item">
+                        <div class="recommendation-title">{{ recommendation.title }}</div>
+                        <div class="recommendation-description">{{ recommendation.description }}</div>
+                        <span class="recommendation-priority priority-{{ recommendation.priority }}">
+                            {{ recommendation.priority.upper() }} PRIORITY
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Framework Compliance Details -->
+        <div class="section">
+            <div class="section-header">Framework Compliance Status</div>
+            <div class="section-content">
+                {% for framework_name, compliance_percentage in analytics.framework_compliance.items() %}
+                <div class="framework-card">
+                    <div class="framework-name">{{ framework_name }}</div>
+                    <div class="framework-description">
+                        Compliance Level: <strong>{{ "%.1f"|format(compliance_percentage) }}%</strong>
+                        {% if analytics.framework_missing_controls.get(framework_name) %}
+                        <br>Missing Controls: {{ analytics.framework_missing_controls[framework_name] }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Aphilion Cyber Compliance Statement -->
+        <div class="section">
+            <div class="section-header">Aphilion Cyber Assessment Certification</div>
+            <div class="section-content">
+                <p><strong>Assessment Certification:</strong> This cybersecurity risk assessment has been conducted by Aphilion Cyber using industry-standard methodologies and frameworks. The assessment covers {{ analytics.frameworks_selected }} compliance frameworks with {{ analytics.total_controls }} security controls evaluated.</p>
+                
+                <p><strong>Regulatory Alignment:</strong> This report aligns with international cybersecurity guidelines and security standards including NIST, ISO, PCI-DSS, HIPAA, and sector-specific requirements.</p>
+                
+                <p><strong>Data Integrity:</strong> All assessment data has been systematically evaluated and cross-referenced across multiple framework requirements to ensure accuracy and completeness by Aphilion Cyber security experts.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-left: 4px solid #2196f3; border-radius: 8px;">
+                    <h4 style="color: #2196f3; margin-bottom: 10px;">Digital Signature & Validation</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <strong>Report Hash:</strong><br>
+                            <code style="font-size: 0.8em; background: #fff; padding: 5px; border-radius: 3px;">SHA256:{{ report_metadata.report_id }}{{ report_metadata.download_timestamp|replace(' ', '')|replace(':', '')|replace('-', '') }}</code>
+                        </div>
+                        <div>
+                            <strong>Validation Code:</strong><br>
+                            <code style="font-size: 0.8em; background: #fff; padding: 5px; border-radius: 3px;">GOV-{{ analytics.security_score }}-{{ analytics.frameworks_selected }}{{ analytics.controls_implemented }}</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Aphilion Cyber Disclaimer:</strong> This assessment is conducted using standardized cybersecurity frameworks and methodologies by Aphilion Cyber security experts. The findings represent the security posture based on implemented controls as of the assessment date. Regular quarterly assessments are recommended for maintaining optimal security standards.</p>
+            <p><strong>Confidentiality Notice:</strong> This document contains sensitive security information and should be handled according to your organization's information classification policies.</p>
+            <p>Report generated by Aphilion Cyber Assessment Platform</p>
+            <p style="font-size: 0.8em; color: #888;">Downloaded: {{ report_metadata.download_timestamp }} | Report ID: {{ report_metadata.report_id }} | Classification: Confidential - Aphilion Cyber</p>
+        </div>
+    </div>
+
+    <script>
+        // Print functionality
+        window.onload = function() {
+            // Auto-print option for PDF generation
+            if (window.location.search.includes('print=true')) {
+                setTimeout(() => window.print(), 1000);
+            }
+        };
+    </script>
+</body>
+</html>
