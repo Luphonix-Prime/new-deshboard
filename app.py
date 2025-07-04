@@ -436,4 +436,4 @@ def generate_recommendations(selected_controls, missing_controls, selected_frame
     return recommendations[:6]  # Return top 6 recommendations
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=6767 , debug=True)
