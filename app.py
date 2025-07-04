@@ -362,6 +362,10 @@ def generate_recommendations(selected_controls, missing_controls, selected_frame
     """Generate security recommendations based on missing controls and selected frameworks."""
     recommendations = []
 
+    # If no missing controls, don't generate any recommendations (perfect security posture)
+    if not missing_controls:
+        return []
+
     # Critical missing controls
     critical_controls = [
         'MFA (Multi-Factor Authentication)', 'Encryption', 'Access Control', 
@@ -376,7 +380,7 @@ def generate_recommendations(selected_controls, missing_controls, selected_frame
             'priority': 'critical'
         })
 
-    # Framework-specific recommendations
+    # Only show framework-specific recommendations if there are missing controls for those frameworks
     framework_recommendations = {
         'nist_csf': 'Implement NIST Cybersecurity Framework core functions',
         'iso_27001': 'Establish Information Security Management System (ISMS)',
@@ -388,13 +392,33 @@ def generate_recommendations(selected_controls, missing_controls, selected_frame
         'iso_27001_enterprise': 'Implement cloud-specific security controls'
     }
 
+    # Check if any selected framework has missing controls before showing framework recommendations
+    from data.controls import get_controls_by_framework
+    controls_by_framework = get_controls_by_framework()
+    framework_name_mapping = {
+        'nist_csf': 'NIST CSF',
+        'iso_27001': 'ISO/IEC 27001/27005',
+        'cobit_2019': 'COBIT 2019',
+        'rbi_cybersecurity': 'RBI Cybersecurity',
+        'pci_dss': 'PCI-DSS v4.0',
+        'hipaa': 'HIPAA',
+        'iso_27001_enterprise': 'ISO 27001 (Enterprise/SaaS)',
+        'cert_in': 'CERT-IN'
+    }
+
     for framework_id in selected_frameworks:
-        if framework_id in framework_recommendations:
-            recommendations.append({
-                'title': f'Framework Compliance: {framework_recommendations[framework_id]}',
-                'description': f'Focus on controls specific to {framework_id.replace("_", " ").title()} requirements',
-                'priority': 'high'
-            })
+        framework_name = framework_name_mapping.get(framework_id)
+        if framework_name and framework_name in controls_by_framework:
+            fw_controls = set(controls_by_framework[framework_name])
+            fw_missing = [c for c in missing_controls if c in fw_controls]
+            
+            # Only add framework recommendation if this framework has missing controls
+            if fw_missing and framework_id in framework_recommendations:
+                recommendations.append({
+                    'title': f'Framework Compliance: {framework_recommendations[framework_id]}',
+                    'description': f'Focus on {len(fw_missing)} missing controls specific to {framework_id.replace("_", " ").title()} requirements',
+                    'priority': 'high'
+                })
 
     # Specific missing control categories
     if any('Patch' in c or 'Vulnerability' in c for c in missing_controls):
@@ -422,14 +446,6 @@ def generate_recommendations(selected_controls, missing_controls, selected_frame
         recommendations.append({
             'title': 'Business Continuity: Implement robust backup and disaster recovery',
             'description': 'Ensure business continuity with tested backup and recovery procedures',
-            'priority': 'medium'
-        })
-
-    # Generic recommendations if no specific gaps found
-    if not recommendations:
-        recommendations.append({
-            'title': 'Continuous Improvement: Regular security assessment and updates',
-            'description': 'Maintain current security posture with regular reviews and updates',
             'priority': 'medium'
         })
 

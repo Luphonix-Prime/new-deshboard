@@ -209,6 +209,7 @@
                 </div>
 
                 <!-- Security Recommendations Card -->
+                {% if analytics.recommendations %}
                 <div class="dashboard-card recommendations-card full-width">
                     <div class="card-header">
                         <h3>Security Recommendations</h3>
@@ -231,6 +232,41 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% else %}
+                <!-- Perfect Security Achievement Card -->
+                <div class="dashboard-card recommendations-card full-width" style="background: linear-gradient(135deg, #10b981, #059669); border: 2px solid #34d399;">
+                    <div class="card-header">
+                        <h3 style="color: white;">🎉 Perfect Security Posture Achieved!</h3>
+                        <i class="fas fa-trophy" style="color: #fbbf24;"></i>
+                    </div>
+                    <div class="recommendations-list">
+                        <div class="recommendation-item" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                            <div class="recommendation-icon">
+                                <i class="fas fa-check-circle" style="color: #34d399;"></i>
+                            </div>
+                            <div class="recommendation-content">
+                                <div class="recommendation-title" style="color: white;">Excellent! All Security Controls Implemented</div>
+                                <div class="recommendation-description" style="color: rgba(255,255,255,0.9);">You have successfully implemented all security controls for your selected frameworks. Your organization maintains an exemplary cybersecurity posture.</div>
+                            </div>
+                            <div class="recommendation-priority" style="background: #34d399; color: white;">
+                                COMPLETE
+                            </div>
+                        </div>
+                        <div class="recommendation-item" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                            <div class="recommendation-icon">
+                                <i class="fas fa-shield-alt" style="color: #34d399;"></i>
+                            </div>
+                            <div class="recommendation-content">
+                                <div class="recommendation-title" style="color: white;">Maintain Your Security Excellence</div>
+                                <div class="recommendation-description" style="color: rgba(255,255,255,0.9);">Continue regular security assessments, stay updated with emerging threats, and ensure all controls remain effective and up-to-date.</div>
+                            </div>
+                            <div class="recommendation-priority" style="background: #059669; color: white;">
+                                MAINTAIN
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </main>

@@ -9,6 +9,30 @@
 </head>
 <body>
     <canvas id="network-bg"></canvas>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="{{ url_for('static', filename='images/white_logo-removebg-preview.png') }}" alt="Aphelion Cyber" class="nav-logo-img">
+                <!-- <span>AphilionCyber</span> -->
+            </div>
+            <div class="nav-steps">
+                <div class="step completed">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Frameworks</span>
+                </div>
+                <div class="step active">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Controls</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Dashboard</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <div class="main-content">
         <div class="container">
             <div class="page-header">
@@ -115,13 +139,6 @@
             </div>
         </div>
     </div>
-
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <img src="{{ url_for('static', filename='images/white_logo-removebg-preview.png') }}" alt="Aphelion Cyber" class="nav-logo-img">
-                <!-- <span>AphilionCyber</span> -->
-            </div>
 
     <script>
         // Search functionality
