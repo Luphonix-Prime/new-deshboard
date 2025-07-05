@@ -515,13 +515,20 @@ body {
 
 /* Navigation */
 .navbar {
-    background: var(--surface-color);
-    border-bottom: 1px solid var(--border-color);
+    background: rgba(26, 26, 46, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.1);
     padding: 1rem 0;
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
-    backdrop-filter: blur(10px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 
+        0 2px 20px rgba(106, 27, 154, 0.1),
+        0 0 40px rgba(139, 92, 246, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-container {
@@ -560,6 +567,8 @@ body {
     border-radius: 25px;
     transition: var(--transition);
     border: 2px solid transparent;
+    min-height: 44px;
+    line-height: 1;
 }
 
 .step.active {
@@ -573,8 +582,8 @@ body {
 }
 
 .step-number {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
     display: flex;
@@ -583,6 +592,9 @@ body {
     justify-content: center;
     font-size: 0.9rem;
     font-weight: 600;
+    flex-shrink: 0;
+    line-height: 1;
+    text-align: center;
 }
 
 .step.active .step-number,
@@ -904,7 +916,7 @@ body {
 .risk-level-indicator::before {
     content: '';
     position: absolute;
-    left: 0;
+    left:0;
     top: 0;
     bottom: 0;
     width: 4px;
@@ -1219,8 +1231,8 @@ body {
 
 .header-actions {
     display: flex;
-    align-items: center;
     margin-top: 21px;
+    align-items: center;
     gap: 1rem;
 }
 
@@ -2092,4 +2104,31 @@ form {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+/* Navbar states for scroll interactions */
+.navbar.scrolled {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-bottom-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 
+        0 4px 30px rgba(106, 27, 154, 0.2),
+        0 0 50px rgba(139, 92, 246, 0.1);
+}
+
+.navbar:hover {
+    background: rgba(26, 26, 46, 0.2);
+    border-bottom-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 
+        0 4px 30px rgba(106, 27, 154, 0.2),
+        0 0 60px rgba(139, 92, 246, 0.15);
+}
+
+.navbar.scrolled:hover {
+    background: rgba(26, 26, 46, 0.98);
+    border-bottom-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 
+        0 6px 40px rgba(106, 27, 154, 0.3),
+        0 0 80px rgba(139, 92, 246, 0.2);
 }
