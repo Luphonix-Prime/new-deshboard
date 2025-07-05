@@ -1317,6 +1317,7 @@ body {
     font-size: 3rem;
     font-weight: 800;
     color: var(--success-color);
+    transition: color 0.3s ease;
 }
 
 .score-label {
