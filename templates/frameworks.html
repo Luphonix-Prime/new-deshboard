@@ -56,6 +56,15 @@
 
                         <div class="framework-content">
                             <div class="framework-header">
+                                <div class="framework-logo-badge">
+                                    <img 
+                                        src="{{ url_for('static', filename='images/frameworks/' ~ framework_id ~ '.webp') }}" 
+                                        alt="{{ framework.name }} Logo" 
+                                        class="framework-logo"
+                                        style="width: 200px;height: auto;"
+                                        onerror="this.style.display='none';"
+                                    >
+                                </div>
                                 <h3>{{ framework.name }}</h3>
                                 <div class="framework-category">
                                     {% if 'NIST' in framework.name %}
@@ -76,19 +85,14 @@
                                     Security Framework
                                     {% endif %}
                                 </div>
+                               
                             </div>
+                            
                             <div class="framework-description">
                                 <p>{{ framework.description }}</p>
                             </div>
-                            <div class="framework-priority-badge">
-                                {% if 'NIST' in framework.name or 'ISO' in framework.name %}
-                                <span class="priority-badge critical">CRITICAL</span>
-                                {% elif 'PCI' in framework.name or 'HIPAA' in framework.name %}
-                                <span class="priority-badge high">HIGH</span>
-                                {% else %}
-                                <span class="priority-badge medium">MEDIUM</span>
-                                {% endif %}
-                            </div>
+
+                            
                         </div>
                     </div>
                     {% endfor %}
