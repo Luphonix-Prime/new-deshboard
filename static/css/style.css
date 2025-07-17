@@ -1458,8 +1458,8 @@ body {
 /* Key Metrics */
 .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
 }
 
 .metric-item {
@@ -2131,4 +2131,12 @@ form {
     box-shadow: 
         0 6px 40px rgba(106, 27, 154, 0.3),
         0 0 80px rgba(139, 92, 246, 0.2);
+}
+.framework-logo {
+    height: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
