@@ -1458,17 +1458,29 @@ body {
 /* Key Metrics */
 .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 1.5rem;
+    margin: 1rem 0;
 }
 
 .metric-item {
     text-align: center;
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     border-radius: var(--border-radius);
     border-left: 4px solid;
+    min-width: 160px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
+.key-metrics-card{
+    grid-column: 1 / -1;
+    height: 100%;
+    width: 1150px;
+    min-width: 500px;
+}
 .metric-item.critical {
     background: rgba(244, 67, 54, 0.1);
     border-color: #f44336;
