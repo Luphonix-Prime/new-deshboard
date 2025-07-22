@@ -1262,8 +1262,8 @@ body {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
     grid-auto-rows: min-content;
     margin-bottom: 2rem;
 }
@@ -1272,7 +1272,7 @@ body {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 2rem;
+    padding: 1.5rem;
     box-shadow: var(--shadow-medium);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
@@ -1456,30 +1456,31 @@ body {
 }
 
 /* Key Metrics */
+
+.key-metrics-card {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: auto;
+}
+
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
     margin: 1rem 0;
 }
 
 .metric-item {
     text-align: center;
-    padding: 1.25rem 1rem;
+    padding: 1rem;
     border-radius: var(--border-radius);
     border-left: 4px solid;
-    min-width: 160px;
-    height: 100px;
+    min-width: auto;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
-
-.key-metrics-card{
-    grid-column: 1 / -1;
-    height: 100%;
-    width: 1150px;
-    min-width: 500px;
+    align-items: center;
 }
 .metric-item.critical {
     background: rgba(244, 67, 54, 0.1);
