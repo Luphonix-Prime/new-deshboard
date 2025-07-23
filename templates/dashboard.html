@@ -373,6 +373,7 @@
         if (totalMissingControls === 0) {
             chartLabels.push('All Controls Implemented');
             chartData.push(100);
+            chartColors[0] = '#10b981'; // Set to green color for perfect implementation
         }
 
         new Chart(riskCtx, {
@@ -381,7 +382,7 @@
                 labels: chartLabels,
                 datasets: [{
                     data: chartData,
-                    backgroundColor: chartColors.slice(0, chartLabels.length),
+                    backgroundColor: totalMissingControls === 0 ? ['#10b981'] : chartColors.slice(0, chartLabels.length),
                     borderColor: '#1e1b4b',
                     borderWidth: 3
                 }]
@@ -394,6 +395,9 @@
                         callbacks: {
                             label: function(context) {
                                 const framework = context.label;
+                                if (totalMissingControls === 0) {
+                                    return `Perfect Implementation: All controls are in place`;
+                                }
                                 const missingCount = frameworkMissingData[framework] || 0;
                                 return `${framework}: ${missingCount} missing controls (${context.parsed}%)`;
                             }

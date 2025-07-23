@@ -1215,12 +1215,10 @@ body {
 .dashboard-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2.5rem;
-
-    padding-bottom: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
-    gap: 2rem;
 }
 
 .dashboard-header h1 {
@@ -1231,9 +1229,9 @@ body {
 
 .header-actions {
     display: flex;
-    margin-top: 21px;
     align-items: center;
     gap: 1rem;
+    margin-top: 0;
 }
 
 .action-btn {
@@ -1264,7 +1262,6 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    grid-auto-rows: min-content;
     margin-bottom: 2rem;
 }
 
@@ -1272,11 +1269,9 @@ body {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow-medium);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .dashboard-card:hover {
@@ -1292,7 +1287,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .card-header h3 {
@@ -1459,28 +1454,32 @@ body {
 
 .key-metrics-card {
     grid-column: 1 / -1;
-    width: 100%;
-    min-width: auto;
+    /* width: 100%;
+    min-width: auto; */
 }
 
 .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
-    margin: 1rem 0;
+    margin-top: 0.5rem;
 }
 
 .metric-item {
-    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
     padding: 1rem;
-    border-radius: var(--border-radius);
-    border-left: 4px solid;
-    min-width: auto;
-    height: auto;
+    text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    min-height: 100px;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 .metric-item.critical {
     background: rgba(244, 67, 54, 0.1);
@@ -1500,8 +1499,18 @@ body {
 /* Chart improvements */
 .coverage-chart, .risk-chart {
     position: relative;
-    height: 220px;
-    margin-bottom: 1.5rem;
+    height: auto;
+    min-height: 220px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    
+
+}
+.coverage-chart canvas {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3/2;
 }
 
 .score-circle {
@@ -1877,13 +1886,17 @@ body {
     }
 
     .metrics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 0 16px;
+        padding: 0 1rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
     }
 
     .main-content {
@@ -2153,3 +2166,5 @@ form {
     margin-left: auto;
     margin-right: auto;
 }
+
+
