@@ -270,5 +270,55 @@ def get_controls_by_framework():
             "Capacity Building Programs",
             "International Cooperation",
             "Research & Development"
-        ]
+        ],
+        'SOC 2 Type 2': [
+    # Security (Required)
+    'Access Controls',
+    'Role-based access',
+    'Multi-factor authentication (MFA)',
+    'Password policy enforcement',
+    'User provisioning and de-provisioning',
+    'Logging and monitoring of systems',
+    'Security incident detection and response',
+    'Intrusion detection/prevention systems (IDS/IPS)',
+    'Change approval workflows',
+    'Version control systems (Git, etc.)',
+    'Testing of changes before deployment',
+    'Risk assessments (periodic and ad hoc)',
+    'Vulnerability scanning and remediation',
+    'Risk assessment of third-party service providers',
+    'Contracts with security clauses',
+    'Acceptable use policy',
+    'Security awareness training',
+    'Data classification policy',
+
+    # Availability
+    'Disaster recovery and business continuity planning (DR/BCP)',
+    'Redundancy and failover mechanisms',
+    'System performance monitoring',
+    'Incident response and uptime reporting',
+    'Capacity planning',
+
+    # Processing Integrity
+    'Data validation checks (input/output)',
+    'Transaction logging and reconciliation',
+    'Job monitoring and alerts for failed jobs',
+    'Automated/manual review of transactions',
+    'Quality assurance (QA) procedures',
+
+    # Confidentiality
+    'Encryption of data at rest and in transit',
+    'Access controls to confidential data',
+    'Data loss prevention (DLP) tools',
+    'Data retention and secure disposal policies',
+    'Confidentiality agreements (NDAs)',
+
+    # Privacy
+    'Privacy policy documentation',
+    'Consent and opt-out mechanisms',
+    'Data subject access request handling',
+    'Personal data minimization',
+    'Data breach notification procedures'
+]
+
     }

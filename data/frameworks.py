@@ -53,5 +53,12 @@ def get_all_frameworks():
             'description': "India's national cybersecurity incident response body.",
             'icon': 'fas fa-flag',
             'color': '#8e24aa'
-        }
+        },
+        'soc2': {
+            'name': 'SOC 2 Type 2',
+            'description': 'Auditing standard for service organizations, reporting on controls relevant to security, availability, processing integrity, confidentiality, or privacy.',
+            'icon': 'fas fa-file-contract',
+            'color': '#4CAF50' # A new color for SOC2
+        },
+        
     }
