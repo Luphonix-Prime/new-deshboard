@@ -53,7 +53,8 @@ def controls():
             'pci_dss': 'PCI-DSS v4.0',
             'hipaa': 'HIPAA',
             'iso_27001_enterprise': 'ISO 27001 (Enterprise/SaaS)',
-            'cert_in': 'CERT-IN'
+            'cert_in': 'CERT-IN',
+            'soc2': 'SOC 2 Type 2'
         }
 
         framework_name = framework_name_mapping.get(framework_id)
@@ -143,7 +144,8 @@ def download_report():
         'pci_dss': 'PCI-DSS v4.0',
         'hipaa': 'HIPAA',
         'iso_27001_enterprise': 'ISO 27001 (Enterprise/SaaS)',
-        'cert_in': 'CERT-IN'
+        'cert_in': 'CERT-IN',
+        'soc2': 'SOC 2 Type 2'
     }
 
     # Prepare template data
@@ -218,7 +220,8 @@ def calculate_analytics(selected_frameworks, selected_controls, frameworks_data,
         'pci_dss': 'PCI-DSS v4.0',
         'hipaa': 'HIPAA',
         'iso_27001_enterprise': 'ISO 27001 (Enterprise/SaaS)',
-        'cert_in': 'CERT-IN'
+        'cert_in': 'CERT-IN',
+        'soc2': 'SOC 2 Type 2'
     }
 
     # Get applicable controls for selected frameworks with validation
@@ -389,7 +392,9 @@ def generate_recommendations(selected_controls, missing_controls, selected_frame
         'rbi_cybersecurity': 'Meet Reserve Bank of India cybersecurity requirements',
         'cobit_2019': 'Align IT governance with business objectives',
         'cert_in': 'Follow national cybersecurity guidelines and incident reporting',
-        'iso_27001_enterprise': 'Implement cloud-specific security controls'
+        'iso_27001_enterprise': 'Implement cloud-specific security controls',
+        'soc2': 'Audit and report on SOC 2 Type 2 controls'
+        
     }
 
     # Check if any selected framework has missing controls before showing framework recommendations
@@ -403,7 +408,8 @@ def generate_recommendations(selected_controls, missing_controls, selected_frame
         'pci_dss': 'PCI-DSS v4.0',
         'hipaa': 'HIPAA',
         'iso_27001_enterprise': 'ISO 27001 (Enterprise/SaaS)',
-        'cert_in': 'CERT-IN'
+        'cert_in': 'CERT-IN',
+        'soc2': 'SOC 2 Type 2'
     }
 
     for framework_id in selected_frameworks:
