@@ -262,12 +262,12 @@
 .assessment-process {
     margin: 4rem 0;
     text-align: center;
-    padding: 2rem 0;
+    /* padding: 2rem 0; */
 }
 
 .assessment-process h3 {
     font-size: 2rem;
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
     font-weight: 600;
     color: var(--text-primary);
 }
