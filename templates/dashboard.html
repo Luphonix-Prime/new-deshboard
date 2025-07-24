@@ -109,6 +109,8 @@
                         </div>
                     </div>
                 </div>
+                </div>
+
 
                 <!-- Top 5 Risks Card -->
                 <div class="dashboard-card top-risks-card">
@@ -116,10 +118,10 @@
                         <h3>Top 5 Risks</h3>
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
-                    <div class="risks-list">
+                    <div class="risks-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px;">
                         {% if analytics.missing_critical %}
                             {% for control in analytics.missing_critical[:3] %}
-                            <div class="risk-item critical">
+                            <div class="risk-item critical" style="height: 100%;">
                                 <div class="risk-indicator">
                                     <i class="fas fa-exclamation-circle"></i>
                                 </div>
@@ -136,7 +138,7 @@
                             {% set remaining_slots = 5 - (analytics.missing_critical|length if analytics.missing_critical else 0) %}
                             {% set other_missing = analytics.missing_controls[analytics.missing_critical|length if analytics.missing_critical else 0:] %}
                             {% for control in other_missing[:remaining_slots] %}
-                            <div class="risk-item high">
+                            <div class="risk-item high" style="height: 100%;">
                                 <div class="risk-indicator">
                                     <i class="fas fa-shield-alt"></i>
                                 </div>
@@ -166,7 +168,7 @@
                         {% endif %}
 
                         {% if not analytics.missing_controls %}
-                        <div class="no-risks">
+                        <div class="no-risks" style="grid-column: span 3; text-align: center;">
                             <i class="fas fa-check-circle"></i>
                             <p>No critical risks identified. Excellent security posture!</p>
                         </div>
@@ -267,7 +269,7 @@
                     </div>
                 </div>
                 {% endif %}
-            </div>
+            
         </div>
     </main>
 
