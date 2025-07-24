@@ -254,20 +254,30 @@ def calculate_analytics(selected_frameworks, selected_controls, frameworks_data,
     coverage_score = coverage_percentage * 0.6
 
     # Critical controls assessment (30% weight) - Enterprise Priority Controls
+    # Define critical controls list
     critical_controls = [
         'MFA (Multi-Factor Authentication)', 'Encryption at Rest', 'Encryption in Transit',
         'Access Control & Identity Management', 'Incident Response Plan', 
         'Backup & Disaster Recovery', 'Network Firewall & Segmentation',
         'Vulnerability Management & Scanning', 'SIEM (Security Information and Event Management)',
-        'Privileged Access Management', 'Data Loss Prevention (DLP)', 'Security Awareness Training'
+        'Privileged Access Management', 'Data Loss Prevention (DLP)', 'Security Awareness Training',
+        'Patch Management', 'Asset Inventory', 'Change Management'
     ]
 
+    # Calculate critical controls metrics
     critical_implemented = sum(1 for control in implemented_controls 
-                              if any(crit.lower() in control.lower() for crit in critical_controls))
-    critical_applicable = sum(1 for control in applicable_controls 
                              if any(crit.lower() in control.lower() for crit in critical_controls))
+    critical_applicable = sum(1 for control in applicable_controls 
+                            if any(crit.lower() in control.lower() for crit in critical_controls))
 
-    critical_score = (critical_implemented / critical_applicable * 30) if critical_applicable > 0 else 0
+    # Modified security scoring calculation
+    coverage_percentage = round((implemented_count / total_applicable * 100), 2) if total_applicable > 0 else 0
+    
+    # Base coverage score (40% weight)
+    coverage_score = coverage_percentage * 0.4
+
+    # Critical controls assessment (35% weight)
+    critical_score = (critical_implemented / critical_applicable * 35) if critical_applicable > 0 else 0
 
     # Compliance framework alignment (10% weight)
     framework_alignment_score = min(len(selected_frameworks) * 2, 10)  # Max 10 points for framework diversity
