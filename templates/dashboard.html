@@ -69,7 +69,7 @@
                     <div class="score-circle">
                         <canvas id="security-score-chart" width="200" height="200"></canvas>
                         <div class="score-center">
-                            <div class="score-number" id="score-number">{{ analytics.security_score }}</div>
+                            <div class="score-number">{{ analytics.security_score }}</div>
                             <div class="score-label">OVERALL SCORE</div>
                         </div>
                     </div>
@@ -278,22 +278,12 @@
         const scoreCtx = document.getElementById('security-score-chart').getContext('2d');
         const securityScore = {{ analytics.security_score }};
 
-        // Determine color based on security score
-        let scoreColor;
-        if (securityScore < 35) {
-            scoreColor = '#f44336'; // Red
-        } else if (securityScore >= 35 && securityScore <= 65) {
-            scoreColor = '#ff9800'; // Orange
-        } else {
-            scoreColor = '#4CAF50'; // Green
-        }
-
         new Chart(scoreCtx, {
             type: 'doughnut',
             data: {
                 datasets: [{
                     data: [securityScore, 100 - securityScore],
-                    backgroundColor: [scoreColor, '#2c2c3e'],
+                    backgroundColor: ['#4CAF50', '#2c2c3e'],
                     borderWidth: 0
                 }]
             },
@@ -304,16 +294,6 @@
                 }
             }
         });
-
-        // Update score number color to match chart
-        const scoreNumberElement = document.getElementById('score-number');
-        if (securityScore < 35) {
-            scoreNumberElement.style.color = '#f44336'; // Red
-        } else if (securityScore >= 35 && securityScore <= 65) {
-            scoreNumberElement.style.color = '#ff9800'; // Orange
-        } else {
-            scoreNumberElement.style.color = '#4CAF50'; // Green
-        }
 
         // Control Coverage Chart - Bar chart showing implemented vs missing
         const coverageCtx = document.getElementById('coverage-chart').getContext('2d');
