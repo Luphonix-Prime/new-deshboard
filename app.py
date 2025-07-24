@@ -206,9 +206,6 @@ def reset():
     session.clear()
     return redirect(url_for('frameworks'))
 
-@app.route('/test')
-def test():
-    return render_template('test2.html')
 def calculate_analytics(selected_frameworks, selected_controls, frameworks_data, all_controls):
     """Calculate precise security analytics and scores for aphelioncyber compliance assessment."""
     from data.controls import get_controls_by_framework
